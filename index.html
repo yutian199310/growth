@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>首页</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content=""/>
+
+    <script src="js/modernizr.custom.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/jquery.fancybox.css" rel="stylesheet">
+    <link href="css/flickity.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/queries.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<header id="main">
+    <section class="hero">
+        <div class="container">
+            <div class="row nav-wrapper">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-left" style="font-size: 24px;color: #575255">
+                    GROWTH
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-left job-menu" style="font-size: 16px">
+
+                </div>
+            </div>
+            <div class="row hero-content">
+                <div class="col-md-12 text-center">
+                    <h1 id="noExtension" style="display: none;color: #333;font-weight: bold">请安装
+                        <a target="_blank" style="color: #333;text-decoration: underline"
+                           href="https://github.com/ChengOrangeJu/WebExtensionWallet">WebExtensionWallet</a> 再使用</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+</header>
+<div class="row" id="app" style="margin-top: 30px">
+    <div class="container">
+        <div class="main">
+            <ul class="cbp_tmtimeline">
+                <li v-for="l in list">
+                    <time class="cbp_tmtime"><span v-html="l.date"></span></time>
+                    <div class="cbp_tmicon cbp_tmicon-phone"></div>
+                    <div class="cbp_tmlabel">
+                        <span v-html="l.company"></span>
+                        <p v-html="l.value"></p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<section class="services-list page-section" id="info">
+    <div class="container">
+        <div class="relative fullwidth col-xs-12">
+            <!-- Send Button -->
+            <button id="addRecord" name="submit" class="form-btn semibold">记录</button>
+        </div>
+    </div>
+</section>
+
+<section id="set" class="container page-section" style="display: none;">
+    <!-- Contact Inner -->
+    <div class="inner contact wp2 delay-05s">
+        <div class="title-section text-center">
+            <h3>我的记录</h3>
+        </div>
+        <!-- Form Area -->
+        <div class="contact-form">
+            <!-- Form -->
+            <!-- Left Inputs -->
+            <div class="col-xs-12 animated fadeInLeft visible" data-animation="fadeInLeft" data-animation-delay="300">
+                <textarea id="content" class="form" cols="30" rows="5" placeholder="今天的记录"></textarea>
+            </div>
+            <!-- Bottom Submit -->
+            <div class="relative fullwidth col-xs-12">
+                <!-- Send Button -->
+                <button id="push" name="submit" class="form-btn semibold">提交</button>
+            </div>
+            <!-- End Bottom Submit -->
+            <!-- Clear -->
+            <div class="clear"></div>
+        </div>
+        <!-- End Contact Form Area -->
+    </div>
+    <!-- End Inner -->
+</section>
+<footer id="about" class="footer">
+    <section id="site-socials" class="no-padding white-bg">
+        <p style="color: #000;">Copyright &copy; 2018.基于新一代区块链公链<a href="https://nebulas.io/" style="color:#666"
+                                                                   target="_blank">NAS</a>&nbsp;&nbsp;&nbsp;</p>
+    </section>
+</footer>
+<link rel="stylesheet" type="text/css" href="css/default.css"/>
+<link rel="stylesheet" type="text/css" href="css/component.css"/>
+<script src=js/nebPay.js></script>
+<script src="js/toucheffects.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/flickity.pkgd.min.js"></script>
+<script src="js/jquery.fancybox.pack.js"></script>
+<script src="js/waypoints.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="js/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    $(function () {
+        var NebPay = require("nebpay");
+        var nebPay = new NebPay();
+
+        var dappAddress = "n1mSYnC68WnzKmd4MCjTbBZ4xDWAv9Dp6pv";
+        //检查扩展是否已安装
+        //如果安装了扩展，var“webExtensionWallet”将被注入到web页面中1
+        setTimeout(function () {
+            if (typeof (webExtensionWallet) === "undefined") {
+                //alert ("扩展钱包未安装，请先安装.")
+                $("#noExtension").show();
+            }
+        }, 500);
+
+        $('#addRecord').on('click', function () {
+            $('#set').show();
+            $('#info').hide();
+        });
+
+
+        function search() {
+            var to = dappAddress;
+            var value = "0";
+            var callFunction = "get";
+            var callArgs = [];
+            nebPay.simulateCall(to, value, callFunction, JSON.stringify(callArgs), {
+                listener: cbSearch
+            });
+        }
+
+        search();
+        setInterval(function () {
+            search();
+        }, 10000)
+
+        function cbSearch(resp) {
+            var result = resp.result
+            if (result === 'null' || result == '') {
+
+            } else {
+                var resultObj = JSON.parse(result);
+                var len = resultObj.value.split('|-').length;
+                var obj = [];
+                for (var i = 0; i < len; i++) {
+                    var temp = {
+                        value: resultObj.value.split('|-')[i],
+                        date: resultObj.date.split('|-')[i],
+                    }
+                    obj.push(temp);
+                }
+                Vue.set(app, 'list', obj);
+                $('#app').show();
+            }
+
+        }
+
+        $("#push").click(function () {
+            var content = $('#content').val();
+            if (content == '') {
+                layer.msg('内容不能为空');
+                return;
+            }
+            var to = dappAddress;
+            var value = "0";
+            var callFunction = "save"
+            var callArgs = [];
+            callArgs.push(content);
+            callArgs.push(new Date().format("yyyy-MM-dd"))
+            nebPay.call(to, value, callFunction, JSON.stringify(callArgs), {
+                listener: cbPush
+            });
+        });
+
+        function cbPush(resp) {
+            console.log("response of push: " + resp)
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                list: []
+            }
+        });
+
+
+        Date.prototype.format = function (format) {
+            var args = {
+                "M+": this.getMonth() + 1,
+                "d+": this.getDate(),
+                "h+": this.getHours(),
+                "m+": this.getMinutes(),
+                "s+": this.getSeconds(),
+                "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+                "S": this.getMilliseconds()
+            };
+            if (/(y+)/.test(format))
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var i in args) {
+                var n = args[i];
+                if (new RegExp("(" + i + ")").test(format))
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+            }
+            return format;
+        };
+    })
+</script>
+</body>
+
+</html>
